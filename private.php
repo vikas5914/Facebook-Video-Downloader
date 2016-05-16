@@ -1,70 +1,58 @@
 <?php
 if (isset($_POST["submit"])) {
 
-     $data =$_POST["url"];
+	$data = $_POST["url"];
 
-    function replace_unicode_escape_sequence($uni) {
-      return mb_convert_encoding(pack('H*', $uni[1]), 'UTF-8', 'UCS-2BE');
-    }
+	function replace_unicode_escape_sequence($uni) {
+		return mb_convert_encoding(pack('H*', $uni[1]), 'UTF-8', 'UCS-2BE');
+	}
 
-    function hd_finallink($curl_content) {
+	function hd_finallink($curl_content) {
 
+		$regex = '/"hd_src_no_ratelimit":"([^"]+)"/';
+		if (preg_match($regex, $curl_content, $match)) {
+			$str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match[1]);
+			$decodedStr = str_replace('\/', '/', $str);
+			return $decodedStr;
 
-      $regex = "/hd_src\\\\(.+?)is_hds/";
-      if(preg_match($regex,$curl_content,$match)){
+		} else {return;}
+	}
 
-      $str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match[0]);
+	function sd_finallink($curl_content) {
 
-      $decodedStr= stripslashes(rawurldecode($str));
-      $decodedStr= str_replace('\/', '/', $decodedStr);
-      $decodedStr= str_replace('hd_src":', '', $decodedStr);
-      $decodedStr= str_replace(',"is_hds', '', $decodedStr);
-      $decodedStr= str_replace('"', '', $decodedStr);
+		$regex = '/"sd_src_no_ratelimit":"([^"]+)"/';
+		if (preg_match($regex, $curl_content, $match1)) {
+			$str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match1[1]);
+			$decodedStr = str_replace('\/', '/', $str);
+			return $decodedStr;
 
+		} else {return;}
+	}
 
-      return $decodedStr ;
+	function thumb($curl_content) {
+		$regex = "/fb:\/\/video\/(.+?)\"/";
+		if (preg_match($regex, $curl_content, $match2)) {
 
-      } else{return;}
-    }
+			$img_src = "https://graph.facebook.com/" . $match2[1] . "/picture";
+			$link = "https://www.facebook.com/video.php?v=" . $match2[1];
+			return array($img_src, $link);
 
-    function sd_finallink($curl_content) {
+		} else {return;}
+	}
 
-      $regex = "/sd_src\\\\(.+?)https\\\\(.+?)video_id/";
-      if(preg_match($regex,$curl_content,$match1)){
-      
-        $str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match1[0]);
-        $decodedStr= stripslashes(rawurldecode($str));
-        $decodedStr= str_replace('\/', '/', $decodedStr);
-        $decodedStr= str_replace('sd_src":"', '', $decodedStr);
-        $decodedStr= str_replace('","video_id', '', $decodedStr);
-        return $decodedStr ;
+	function gettitle($curl_content) {
+		$regex = "/title id=\"pageTitle\">(.+?)<\/title>/";
+		if (preg_match($regex, $curl_content, $title_match)) {
+			$title_match = explode("|", $title_match[1]);
+			return $title_match[0];
+		} else {return;}
 
-      }else{return;}
-    }
+	}
 
-    function thumb($curl_content) {
-      $regex ="/\?v=(.+?)&amp/";
-      if(preg_match($regex,$curl_content,$match2)){
-
-        $img_src ="https://graph.facebook.com/".$match2[1]."/picture";
-        $link="https://www.facebook.com/video.php?v=".$match2[1];
-        return  array($img_src,$link);
-
-      }else{return;}
-    }
-
-    function gettitle($curl_content){
-      $regex ="/title id=\"pageTitle\">(.+?)<\/title>/";
-      if(preg_match($regex,$curl_content,$title_match)){
-        return $title_match[1];
-      }else{return;}
-
-    }
-
-    $hdlink = hd_finallink($data);
-    $sdlink = sd_finallink($data);
-    $title = gettitle($data);
-    $img = thumb($data);
+	$hdlink = hd_finallink($data);
+	$sdlink = sd_finallink($data);
+	$title = gettitle($data);
+	$img = thumb($data);
 
 }
 ?>
@@ -91,7 +79,7 @@ if (isset($_POST["submit"])) {
     <div class="col-md-12 column">
       <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#facebook-video-downloader"> 
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#facebook-video-downloader">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -124,30 +112,30 @@ if (isset($_POST["submit"])) {
                   <span class="input-group-btn"><button class="btn btn-primary btn-block btn-large" id="download" name="submit">Download!</button></span>
               </div>
             </form>
-        </div>    
+        </div>
       </div>
-        <?php if($title){ ?>
+        <?php if ($title) {?>
       <div class="well" id="result" style="">
-          <div id="downloadUrl" style=""> 
+          <div id="downloadUrl" style="">
             <div class="row">
               <div class="col-md-4"><p class="text-center"><b>Video Picture</b></p><p class="text-center" id="img"><img class="img-thumbnail" src="<?php echo $img[0]; ?>"></p></div>
-              
+
               <div class="col-md-4">
                   <p class="text-center"><b>Information</b></p>
                   <div class="col-sm-2">Title:</div>
                   <div class="col-sm-10" id="title"><?php echo $title; ?></div>
                   <div class="col-sm-2">Source:</div>
-                  <div class="col-sm-10" id="src"><a href="<?php echo $img[1];?>"><?php echo $img[1];?></a></div>
+                  <div class="col-sm-10" id="src"><a href="<?php echo $img[1]; ?>"><?php echo $img[1]; ?></a></div>
               </div>
               <div class="col-md-4">
                 <p class="text-center"><b>Download Link</b></p>
-                <p class="text-center" id="sd"><a href="<?php echo $sdlink;?>"><b>MP4 SD</b></a></p>
-                <p class="text-center" id="hd"><a href="<?php echo $hdlink;?>"><b>MP4 HD</b></a></p>
+                <p class="text-center" id="sd"><a href="<?php echo $sdlink; ?>" download="sd.mp4"><b>MP4 SD</b></a></p>
+                <p class="text-center" id="hd"><a href="<?php echo $hdlink; ?>" download="hd.mp4"><b>MP4 HD</b></a></p>
                </div>
             </div>
           </div>
-        </div> 
-        <?php } ?>   
+        </div>
+        <?php }?>
       </div>
     </div>
   <div class="well">

@@ -12,6 +12,9 @@
       text-align: center;
       width: 90%;
       margin: 0 auto;
+    }
+  #vid_url{
+    word-break: break-all;
     }</style>
 
 </head>
@@ -85,17 +88,7 @@
 <script type="text/javascript" src="js/bootstrap.min.js" ></script>
 <script type="text/javascript">
 
-function getQueryVariable(variable)
-{
-       var query = $("#url").val();
-       var vars = query.split("?");
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-}
-      
+     
 function getDownloadLink(){
   var vid_url = $("#url").val();
   
@@ -117,14 +110,14 @@ function getDownloadLink(){
       $("#downloadUrl").css("display","block");
       if(data.type=="success") {
 
-        var img_link = getQueryVariable('v');
+        var img_link = $("#url").val().split("/")[5];
         $("#title").html(data.title);
         $("#img").html('<img class="img-thumbnail" src="https://graph.facebook.com/'+img_link+'/picture">');
-        $("#src").html('<a href="'+vid_url+'">'+vid_url+'</a>');
-        $("#sd").html('<a href="'+data.sd_download_url+'"><b>MP4 SD</b></a>');
+        $("#src").html('<a id="vid_url" href="'+vid_url+'">'+vid_url+'</a>');
+        $("#sd").html('<a href="'+data.sd_download_url+'" download="sd.mp4"><b>MP4 SD</b></a>');
 
-        if(data.hd_download_url!="null"){
-        $("#hd").html('<a href="'+data.hd_download_url+'"><b>MP4 HD</b></a>');
+        if(data.hd_download_url){
+        $("#hd").html('<a href="'+data.hd_download_url+'" download="hd.mp4"><b>MP4 HD</b></a>');
         }
       }
       

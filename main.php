@@ -2,58 +2,47 @@
 $url = $_POST['url'];
 
 $context = [
-  'http' => [
-    'method' => 'GET',
-    'header' => "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13"
-  ]
+	'http' => [
+		'method' => 'GET',
+		'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.47 Safari/537.36",
+	],
 ];
 $context = stream_context_create($context);
 $data = file_get_contents($url, false, $context);
 
 function replace_unicode_escape_sequence($uni) {
-	return mb_convert_encoding(pack('H*', $uni[1]), 'UTF-8', 'UCS-2BE');
+	return mb_convert_encoding(pack('H*', $uni[1]), 'UTF-8', 'UCS-2');
 }
 
 function hd_finallink($curl_content) {
 
+	$regex = '/"hd_src_no_ratelimit":"([^"]+)"/';
+	if (preg_match($regex, $curl_content, $match)) {
+		$str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match[1]);
+		$decodedStr = str_replace('\/', '/', $str);
+		return $decodedStr;
 
-	$regex = "/hd_src\\\\(.+?)is_hds/";
-	if(preg_match($regex,$curl_content,$match)){
-
-	$str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match[0]);
-
-	$decodedStr= stripslashes(rawurldecode($str));
-	$decodedStr= str_replace('\/', '/', $decodedStr);
-	$decodedStr= str_replace('hd_src":', '', $decodedStr);
-	$decodedStr= str_replace(',"is_hds', '', $decodedStr);
-	$decodedStr= str_replace('"', '', $decodedStr);
-
-
-	return $decodedStr ;
-
-	} else{return;}
+	} else {return;}
 }
 
 function sd_finallink($curl_content) {
 
-	$regex = "/sd_src\\\\(.+?)https\\\\(.+?)video_id/";
-	if(preg_match($regex,$curl_content,$match1)){
-	
-		$str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match1[0]);
-		$decodedStr= stripslashes(rawurldecode($str));
-		$decodedStr= str_replace('\/', '/', $decodedStr);
-		$decodedStr= str_replace('sd_src":"', '', $decodedStr);
-		$decodedStr= str_replace('","video_id', '', $decodedStr);
-		return $decodedStr ;
+	$regex = '/"sd_src_no_ratelimit":"([^"]+)"/';
+	if (preg_match($regex, $curl_content, $match1)) {
 
-	}else{return;}
+		$str = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $match1[1]);
+		$decodedStr = str_replace('\/', '/', $str);
+		return $decodedStr;
+
+	} else {return;}
 }
 
-function gettitle($curl_content){
-	$regex ="/title id=\"pageTitle\">(.+?)<\/title>/";
- 	if(preg_match($regex,$curl_content,$title_match)){
- 		return $title_match[1];
- 	}else{return;}
+function gettitle($curl_content) {
+	$regex = "/title id=\"pageTitle\">(.+?)<\/title>/";
+	if (preg_match($regex, $curl_content, $title_match)) {
+		$title_match = explode("|", $title_match[1]);
+		return $title_match[0];
+	} else {return;}
 
 }
 
@@ -63,8 +52,7 @@ $title = gettitle($data);
 
 $message = array();
 
-
-if ($sdlink !="") {
+if ($sdlink != "") {
 	$message = array(
 		'type' => 'success',
 		'title' => $title,
@@ -79,6 +67,3 @@ if ($sdlink !="") {
 	);
 }
 echo json_encode($message);
-
-?>
-

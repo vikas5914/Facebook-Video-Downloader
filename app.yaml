@@ -1,6 +1,6 @@
-application: fbvideo-download
+application: fbvideo-download 
 version: 1
-runtime: php
+runtime: php55
 api_version: 1
 threadsafe: yes
 
@@ -11,6 +11,9 @@ handlers:
 
 - url: /main.php
   script: main.php
+
+- url: /co.php
+  script: co.php
 
 - url: /(.*\.js)
   mime_type: text/javascript
@@ -31,6 +34,9 @@ handlers:
 
 - url: /private.php
   script: private.php
+
+- url: /test.php
+  script: test.php
 
 - url: /index.php
   script: index.php
