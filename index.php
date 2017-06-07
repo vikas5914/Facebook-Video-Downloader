@@ -24,7 +24,7 @@
     <div class="col-md-12 column">
       <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#facebook-video-downloader"> 
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#facebook-video-downloader">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -53,7 +53,7 @@
                   <input type="text" name="url" class="form-control" placeholder="Facebook Video URL" id="url">
                   <span class="input-group-btn"><a class="btn btn-primary" onclick="getDownloadLink();" id="download">Download!</a></span>
               </div>
-        </div>    
+        </div>
       </div>
       <div class="well" id="result" style="display:none;">
           <div id="bar"><p class="text-center"><img src="img/ajax.gif"></p></div>
@@ -74,27 +74,29 @@
                </div>
             </div>
           </div>
-        </div>    
+        </div>
       </div>
     </div>
   <div class="well">
     <div class="centered">
-      <span style="text-align:center;display:block;">© <?php echo date('Y') ?> <a href="https://hashtagsoftworks.com">Hashtagsoftworks.com</a> &amp; <a href="https://www.kapadiya.net">Kapadiya.net</a></span>
+      <span style="text-align:center;display:block;">© <?php echo date('Y') ?> <a href="https://www.kapadiya.net">Kapadiya.net</a></span>
     </div>
   </div>
 </div>
+
+<a href="https://github.com/vikas5914/Facebook-Video-Downloader"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
 
 <script type="text/javascript" src="js/jquery.min.js" ></script>
 <script type="text/javascript" src="js/bootstrap.min.js" ></script>
 <script type="text/javascript">
 
-     
+
 function getDownloadLink(){
   var vid_url = $("#url").val();
-  
+
   $("#download").html("Grabbing Link ...");
   $("#download").attr("disabled","disabled");
-  $("#result").css("display","block"); 
+  $("#result").css("display","block");
   $("#downloadUrl").css("display","none");
   $("#bar").css("display","block");
   $("#hd").html('');
@@ -120,17 +122,17 @@ function getDownloadLink(){
         $("#hd").html('<a href="'+data.hd_download_url+'" download="hd.mp4"><b>MP4 HD</b></a>');
         }
       }
-      
+
       if(data.type=="failure"){
         $("#downloadUrl").html('<h3>'+data.message+'</h3>');
       }
-      
+
       $("#download").html("Download!");
       $("#download").removeAttr("disabled");
     }
   })
 }
-      
+
 </script>
 </body>
 </html>
