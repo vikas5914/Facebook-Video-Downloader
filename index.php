@@ -56,7 +56,7 @@
         </div>
       </div>
       <div class="well" id="result" style="display:none;">
-          <div id="bar"><p class="text-center"><img src="img/ajax.gif"></p></div>
+          <div id="bar"><p class="text-center"><img src="static/img/ajax.gif"></p></div>
           <div id="downloadUrl" style="display:none;">
             <div class="row">
               <div class="col-md-4"><p class="text-center"><b>Video Picture</b></p><p class="text-center" id="img"></p></div>
