@@ -53,6 +53,7 @@
                   <input type="text" name="url" class="form-control" placeholder="Facebook Video URL" id="url">
                   <span class="input-group-btn"><a class="btn btn-primary" onclick="getDownloadLink();" id="download">Download!</a></span>
               </div>
+              <div class="alert alert-success">Example: http://facebook.com/10nux/videos/1692248620992755/ --> HTTP And HTTPS</div>
         </div>
       </div>
       <div class="well" id="result" style="display:none;">
