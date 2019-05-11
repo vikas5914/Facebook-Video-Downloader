@@ -1,5 +1,7 @@
 <?php
-$url = $_POST['url'];
+// $url = $_POST['url'];
+
+$url = "https://www.facebook.com/5min.crafts/videos/1040621729467977";
 
 $context = [
     'http' => [
@@ -10,6 +12,15 @@ $context = [
 $context = stream_context_create($context);
 $data = file_get_contents($url, false, $context);
 
+// $data = file_get_contents(__DIR__. '/1.txt', false);
+
+preg_match_all('/FBQualityLabel=\\\\"([^"]+)\\\\">\\\\x3CBaseURL>([^\\\\]+)/', $data, $output_array);
+
+var_dump(htmlspecialchars_decode($output_array[2][0]));
+
+die();
+
+
 function cleanStr($str)
 {
     return html_entity_decode(strip_tags($str), ENT_QUOTES, 'UTF-8');
@@ -17,22 +28,22 @@ function cleanStr($str)
 
 function hd_finallink($curl_content)
 {
-
     $regex = '/hd_src_no_ratelimit:"([^"]+)"/';
     if (preg_match($regex, $curl_content, $match)) {
         return $match[1];
-
-    } else {return;}
+    } else {
+        return;
+    }
 }
 
 function sd_finallink($curl_content)
 {
-
     $regex = '/sd_src_no_ratelimit:"([^"]+)"/';
     if (preg_match($regex, $curl_content, $match1)) {
         return $match1[1];
-
-    } else {return;}
+    } else {
+        return;
+    }
 }
 
 function getTitle($curl_content)
@@ -66,4 +77,5 @@ if ($sdlink != "") {
         'message' => 'Error retrieving the download link for the url. Please try again later',
     );
 }
+
 echo json_encode($message);
