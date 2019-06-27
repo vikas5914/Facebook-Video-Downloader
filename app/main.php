@@ -5,13 +5,11 @@ header('Content-Type: application/json');
 $msg = [];
 
 try {
-
     $url = $_POST['url'];
 
     if (empty($url)) {
         throw new Exception('Please prvode the URL', 1);
     }
-
 
     $context = [
         'http' => [
@@ -48,6 +46,7 @@ function generateId($url)
     } elseif (preg_match('#(\d+)/?$#', $url, $matches)) {
         $id = $matches[1];
     }
+
     return $id;
 }
 
@@ -72,6 +71,7 @@ function getTitle($curl_content)
     } elseif (preg_match('/title id="pageTitle">(.+?)<\/title>/', $curl_content, $matches)) {
         $title = $matches[1];
     }
+
     return cleanStr($title);
 }
 
@@ -80,5 +80,6 @@ function getDescription($curl_content)
     if (preg_match('/span class="hasCaption">(.+?)<\/span>/', $curl_content, $matches)) {
         return cleanStr($matches[1]);
     }
+
     return false;
 }
