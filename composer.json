@@ -1,0 +1,11 @@
+{
+    "name": "vikas/facebook-video-downloader",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vikas5914",
+            "email": "vikas@kapadiya.net"
+        }
+    ],
+    "require": {}
+}
