@@ -7,5 +7,7 @@
             "email": "vikas@kapadiya.net"
         }
     ],
-    "require": {}
+    "require": {
+      "ext-json": "*"
+    }
 }

@@ -8,7 +8,7 @@ try {
     $url = $_POST['url'];
 
     if (empty($url)) {
-        throw new Exception('Please prvode the URL', 1);
+        throw new Exception('Please provide the URL', 1);
     }
 
     $context = [
@@ -25,13 +25,14 @@ try {
     $msg['id'] = generateId($url);
     $msg['title'] = getTitle($data);
 
-    $videoData = getLinks($data);
-    if ($videoData) {
-        foreach ($videoData[1]  as $key => $value) {
-            $msg['links'][$value] = cleanStr($videoData[2][$key]);
-        }
+    if ($sdLink = getSDLink($data)) {
+        $msg['links']['Download Low Quality'] = $sdLink;
     }
-} catch (\Exception $e) {
+
+    if ($hdLink = getHDLink($data)) {
+        $msg['links']['Download High Quality'] = $hdLink;
+    }
+} catch (Exception $e) {
     $msg['success'] = false;
     $msg['message'] = $e->getMessage();
 }
@@ -55,11 +56,31 @@ function cleanStr($str)
     return html_entity_decode(strip_tags($str), ENT_QUOTES, 'UTF-8');
 }
 
-function getLinks($curl_content)
+function getSDLink($curl_content)
 {
-    $regex = '/FBQualityLabel=\\\\"([^"]+)\\\\">\\\\x3CBaseURL>([^\\\\]+)/';
-    if (preg_match_all($regex, $curl_content, $output_array)) {
-        return $output_array;
+    $regexRateLimit = '/sd_src_no_ratelimit:"([^"]+)"/';
+    $regexSrc = '/sd_src:"([^"]+)"/';
+
+    if (preg_match($regexRateLimit, $curl_content, $match)) {
+        return $match[1];
+    } elseif (preg_match($regexSrc, $curl_content, $match)) {
+        return $match[1];
+    } else {
+        return false;
+    }
+}
+
+function getHDLink($curl_content)
+{
+    $regexRateLimit = '/hd_src_no_ratelimit:"([^"]+)"/';
+    $regexSrc = '/hd_src:"([^"]+)"/';
+
+    if (preg_match($regexRateLimit, $curl_content, $match)) {
+        return $match[1];
+    } elseif (preg_match($regexSrc, $curl_content, $match)) {
+        return $match[1];
+    } else {
+        return false;
     }
 }
 
