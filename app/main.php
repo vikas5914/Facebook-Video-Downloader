@@ -25,14 +25,13 @@ try {
     $msg['id'] = generateId($url);
     $msg['title'] = getTitle($data);
 
-    if($sdLink = getSDLink($data)) {
+    if ($sdLink = getSDLink($data)) {
         $msg['links']['Download Low Quality'] = $sdLink;
     }
 
-    if($hdLink = getHDLink($data)){
+    if ($hdLink = getHDLink($data)) {
         $msg['links']['Download High Quality'] = $hdLink;
     }
-
 } catch (Exception $e) {
     $msg['success'] = false;
     $msg['message'] = $e->getMessage();
@@ -57,26 +56,28 @@ function cleanStr($str)
     return html_entity_decode(strip_tags($str), ENT_QUOTES, 'UTF-8');
 }
 
-function getSDLink($curl_content) {
+function getSDLink($curl_content)
+{
     $regexRateLimit = '/sd_src_no_ratelimit:"([^"]+)"/';
     $regexSrc = '/sd_src:"([^"]+)"/';
 
     if (preg_match($regexRateLimit, $curl_content, $match)) {
         return $match[1];
-    } else if(preg_match($regexSrc, $curl_content, $match))  {
+    } elseif (preg_match($regexSrc, $curl_content, $match)) {
         return $match[1];
     } else {
         return false;
     }
 }
 
-function getHDLink($curl_content) {
+function getHDLink($curl_content)
+{
     $regexRateLimit = '/hd_src_no_ratelimit:"([^"]+)"/';
     $regexSrc = '/hd_src:"([^"]+)"/';
 
     if (preg_match($regexRateLimit, $curl_content, $match)) {
         return $match[1];
-    } else if(preg_match($regexSrc, $curl_content, $match))  {
+    } elseif (preg_match($regexSrc, $curl_content, $match)) {
         return $match[1];
     } else {
         return false;
