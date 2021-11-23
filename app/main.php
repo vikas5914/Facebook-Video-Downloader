@@ -1,24 +1,31 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+
 header('Content-Type: application/json');
 
 $msg = [];
 
 try {
-    $url = $_POST['url'];
+    $url = $_REQUEST['url'];
 
     if (empty($url)) {
         throw new Exception('Please provide the URL', 1);
     }
 
-    $context = [
-        'http' => [
-            'method' => 'GET',
-            'header' => 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.47 Safari/537.36',
-        ],
-    ];
-    $context = stream_context_create($context);
-    $data = file_get_contents($url, false, $context);
+    $client = HttpClient::create([
+        'headers' => [
+            'accept' => 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
+            'cache-control' => 'no-cache',
+        ]
+    ]);
+
+    $response = $client->request('GET', $url);
+
+    $data = $response->getContent();
 
     $msg['success'] = true;
 
@@ -58,13 +65,10 @@ function cleanStr($str)
 
 function getSDLink($curl_content)
 {
-    $regexRateLimit = '/sd_src_no_ratelimit:"([^"]+)"/';
-    $regexSrc = '/sd_src:"([^"]+)"/';
+    $regexRateLimit = '/playable_url":"([^"]+)"/';
 
     if (preg_match($regexRateLimit, $curl_content, $match)) {
-        return $match[1];
-    } elseif (preg_match($regexSrc, $curl_content, $match)) {
-        return $match[1];
+        return stripslashes($match[1]);
     } else {
         return false;
     }
@@ -72,13 +76,10 @@ function getSDLink($curl_content)
 
 function getHDLink($curl_content)
 {
-    $regexRateLimit = '/hd_src_no_ratelimit:"([^"]+)"/';
-    $regexSrc = '/hd_src:"([^"]+)"/';
+    $regexRateLimit = '/playable_url_quality_hd":"([^"]+)"/';
 
     if (preg_match($regexRateLimit, $curl_content, $match)) {
-        return $match[1];
-    } elseif (preg_match($regexSrc, $curl_content, $match)) {
-        return $match[1];
+        return stripslashes($match[1]);
     } else {
         return false;
     }
@@ -87,7 +88,7 @@ function getHDLink($curl_content)
 function getTitle($curl_content)
 {
     $title = null;
-    if (preg_match('/h2 class="uiHeaderTitle"?[^>]+>(.+?)<\/h2>/', $curl_content, $matches)) {
+    if (preg_match('/<title>(.*?)<\/title>/', $curl_content, $matches)) {
         $title = $matches[1];
     } elseif (preg_match('/title id="pageTitle">(.+?)<\/title>/', $curl_content, $matches)) {
         $title = $matches[1];

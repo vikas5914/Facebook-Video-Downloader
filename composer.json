@@ -8,6 +8,7 @@
         }
     ],
     "require": {
-      "ext-json": "*"
+      "ext-json": "*",
+        "symfony/http-client": "^5.3"
     }
 }
