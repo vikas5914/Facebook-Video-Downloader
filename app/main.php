@@ -2,8 +2,8 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
+use Symfony\Component\HttpClient\HttpClient;
 
 header('Content-Type: application/json');
 
@@ -17,8 +17,7 @@ try {
         throw new Exception('Please provide the URL', 1);
     }
 
-
-    /* 
+    /*
         When there is shortlink, (example fb.watch), Directly getting content using follow redirect gives error.
         So we need to follow redirect and get the final url. thene make a another request to get the content.
     */
@@ -38,9 +37,9 @@ try {
 
     $client = HttpClient::create([
         'headers' => [
-            'accept' => 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
-        ]
+            'accept'     => 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
+        ],
     ]);
 
     $response = $client->request('GET', $url);
