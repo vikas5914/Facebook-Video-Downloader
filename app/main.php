@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
