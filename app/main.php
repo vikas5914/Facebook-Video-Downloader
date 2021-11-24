@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Exception\RedirectionException;
 
 header('Content-Type: application/json');
 
@@ -10,16 +11,35 @@ $msg = [];
 
 try {
     $url = $_REQUEST['url'];
+    $redirectUrl = null;
 
     if (empty($url)) {
         throw new Exception('Please provide the URL', 1);
     }
 
+
+    /* 
+        When there is shortlink, (example fb.watch), Directly getting content using follow redirect gives error.
+        So we need to follow redirect and get the final url. thene make a another request to get the content.
+    */
+
+    $redirectCheckClient = HttpClient::create();
+
+    try {
+        $redirectCheckClient->request('GET', $url, ['max_redirects' => 0])->getContent();
+        // not redirected
+    } catch (RedirectionException $e) {
+        $redirectUrl = $e->getResponse()->getInfo()['redirect_url'];
+    }
+
+    if ($redirectUrl) {
+        $url = $redirectUrl;
+    }
+
     $client = HttpClient::create([
         'headers' => [
             'accept' => 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
-            'cache-control' => 'no-cache',
+            'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
         ]
     ]);
 
