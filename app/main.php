@@ -2,7 +2,6 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Symfony\Component\HttpClient\Exception\RedirectionException;
 use Symfony\Component\HttpClient\HttpClient;
 
 header('Content-Type: application/json');
