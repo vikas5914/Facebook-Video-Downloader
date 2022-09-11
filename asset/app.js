@@ -10,7 +10,7 @@ const getDownloadLink = async () => {
 
   const formData = new FormData()
   formData.append('url', vid_url)
-  let response = await fetch('app/main.php', {
+  const response = await fetch('app/main.php', {
     method: 'POST',
     body: formData
   })
@@ -27,8 +27,8 @@ const getDownloadLink = async () => {
 
     const links = res.links
 
-    Object.keys(links).forEach(function (key) {
-      $('#links').append(`<a class="btn btn-info mr-2" href="${links[key]}" role="button">${key}</a>`)
+    links !== undefined && Object.keys(links).forEach(function (key) {
+      $('#links').append(`<a class="btn btn-info mr-2" href="${links[key]}" role="button" download="${key}.mp4">${key}</a>`)
     })
   } else {
     $('#bar').hide()
