@@ -84,7 +84,7 @@ function cleanStr($str)
 
 function getSDLink($curl_content)
 {
-    $regexRateLimit = '/playable_url":"([^"]+)"/';
+    $regexRateLimit = '/browser_native_sd_url":"([^"]+)"/';
 
     if (preg_match($regexRateLimit, $curl_content, $match)) {
         return cleanStr($match[1]);
@@ -95,7 +95,7 @@ function getSDLink($curl_content)
 
 function getHDLink($curl_content)
 {
-    $regexRateLimit = '/playable_url_quality_hd":"([^"]+)"/';
+    $regexRateLimit = '/browser_native_hd_url":"([^"]+)"/';
 
     if (preg_match($regexRateLimit, $curl_content, $match)) {
         return cleanStr($match[1]);
