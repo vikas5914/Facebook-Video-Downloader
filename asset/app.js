@@ -28,7 +28,7 @@ const getDownloadLink = async () => {
     const links = res.links
 
     links !== undefined && Object.keys(links).forEach(function (key) {
-      $('#links').append(`<a class="btn btn-info mr-2" href="${links[key]}&dl=1" download="${key}.mp4">${key}</a>`)
+      $('#links').append(`<a class="btn btn-info mr-2" href="${links[key]}" download="${key}.mp4">${key}</a>`)
     })
   } else {
     $('#bar').hide()

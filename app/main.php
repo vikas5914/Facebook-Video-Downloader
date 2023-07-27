@@ -50,11 +50,11 @@ try {
     $msg['title'] = getTitle($data);
 
     if ($sdLink = getSDLink($data)) {
-        $msg['links']['Download Low Quality'] = $sdLink;
+        $msg['links']['Download Low Quality'] = $sdLink . '&dl=1';
     }
 
     if ($hdLink = getHDLink($data)) {
-        $msg['links']['Download High Quality'] = $hdLink;
+        $msg['links']['Download High Quality'] = $hdLink . '&dl=1';
     }
 } catch (Exception $e) {
     $msg['success'] = false;
