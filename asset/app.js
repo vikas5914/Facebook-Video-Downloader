@@ -1,7 +1,8 @@
 const getDownloadLink = async () => {
   $('#result').hide()
 
-  const vid_url = $('#link').val()
+  const vid_url       = $('#link').val()
+  const curl_command  = $('#command').val()
 
   $('#download').val('Grabbing Link ...')
   $('#download').attr('disabled', 'disabled')
@@ -10,6 +11,7 @@ const getDownloadLink = async () => {
 
   const formData = new FormData()
   formData.append('url', vid_url)
+  formData.append('curl_command', curl_command)
   const response = await fetch('app/main.php', {
     method: 'POST',
     body: formData
