@@ -1,14 +1,13 @@
 {
-    "name": "vikas/facebook-video-downloader",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Vikas5914",
-            "email": "vikas@kapadiya.net"
-        }
-    ],
-    "require": {
-      "ext-json": "*",
-        "symfony/http-client": "^5.3"
+  "name": "vikas/facebook-video-downloader",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vikas5914",
+      "email": "vikas@kapadiya.net"
     }
+  ],
+  "require": {
+    "ext-json": "*"
+  }
 }
